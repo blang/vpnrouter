@@ -1,0 +1,43 @@
+html {
+    padding-top: 70px;
+}
+* {
+    font-size: 16px;
+    line-height: 2;
+}
+.container {
+    /* margin: 5px; */
+    /* width: 100%; */
+}
+
+.routing .row {
+    margin-bottom: 10px;
+}
+.routing .myentry {
+    margin-bottom: 30px;
+    border-bottom: 1px;
+    /* background-color: lightgrey; */
+    padding: 10px 0 10px 0;
+}
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
+.navbar-alert {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.navbar-header flash-message div {
+    display: inline-block;
+    margin-bottom: 0px;
+}
+.navbar-header .alert {
+    padding-bottom: 3px;
+    margin-top: 5px;
+    padding-top: 3px;
+}
+.breakwords {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}

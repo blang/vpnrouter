@@ -1,0 +1,83 @@
+<!doctype html>
+<html class="no-js" lang="en" ng-app="vpnrApp">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>VPN Router</title>
+        <meta name="description" content="VPN Router">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/angular-flash.min.css">
+        <link rel="stylesheet" href="css/main.css">
+        <script src="js/modernizr-2.8.3.min.js"></script>
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">VPN Router</a>
+                    <flash-message duration="5000" show-close="true"></flash-message>
+                </div>
+            </div>
+        </nav>  
+        
+        <div class="container center-block routing" ng-cloak ng-controller="RouteController as routeList">
+
+            <div class="row myentry alert alert-info" ng-show="routeList.myRoute" >
+                <div class="col-xs-3 breakwords">
+                    <strong>{{routeList.myRoute.hostname}}</strong>
+                </div>
+                <div class="col-xs-4">
+                    <strong>{{routeList.myRoute.ip}}</strong><br /> {{routeList.myRoute.mac}}
+                </div>
+                <div class="col-xs-5 ">
+                    <!-- Single button -->
+                    <div class="btn-group pull-right">
+                        <button type="button" class="btn {{ routeList.tableClass(routeList.myRoute.table)}} dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{routeList.tableByName(routeList.myRoute.table).text}}
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li ng-repeat="table in routeList.missingTables(routeList.myRoute.table)" ng-click="routeList.setRoute(routeList.myRoute.ip, table.name)"><a href="#">{{ table.text }}</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+            <!-- Entry -->
+            <div class="row" ng-repeat="route in routeList.routes">
+                <div class="col-xs-3 breakwords">
+                    <strong>{{route.hostname}}</strong>
+                </div>
+                <div class="col-xs-4">
+                    <strong>{{route.ip}}</strong><br /> {{route.mac}}
+                </div>
+                <div class="col-xs-5 ">
+                    <!-- Single button -->
+                    <div class="btn-group pull-right">
+                        <button type="button" class="btn {{ routeList.tableClass(route.table)}} dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{routeList.tableByName(route.table).text}}
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li ng-repeat="table in routeList.missingTables(route.table)" ng-click="routeList.setRoute(route.ip, table.name)"><a href="#">{{ table.text }}</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <script src="js/jquery-2.2.0.min.js"></script> 
+        <script src="js/bootstrap.min.js"></script> 
+        <script src="js/angular.min.js"></script>
+        <script src="js/angular-flash.min.js"></script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+
+    </body>
+</html>
