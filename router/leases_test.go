@@ -28,18 +28,18 @@ func TestDNSMasqLeases(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error: %s", err)
 	}
-	var p LeaseProvider = NewDNSMasqLeaseProvider(name)
-	ls, err := p.Leases()
+	var p HostProvider = NewDNSMasqLeaseProvider(name)
+	ls, err := p.Hosts()
 	if err != nil {
 		t.Fatalf("Error getting leases: %s", err)
 	}
 	assert.Equal(2, len(ls), "Need 2 leases")
-	assert.Equal(Lease{
+	assert.Equal(Host{
 		IP:   "192.168.0.1",
 		MAC:  "00:11:22:33:44:55",
 		Name: "pc1",
 	}, ls[0], "Invalid lease")
-	assert.Equal(Lease{
+	assert.Equal(Host{
 		IP:   "192.168.0.2",
 		MAC:  "00:11:22:33:44:66",
 		Name: "pc2",

@@ -7,28 +7,28 @@ import (
 	"strings"
 )
 
-var arpFile = "/proc/net/arp"
-
 type ARPProvider struct {
-	devs map[string]struct{}
+	devs    map[string]struct{}
+	arpFile string
 }
 
-func NewARPProvider(devices []string) *ARPProvider {
+func NewARPProvider(devices []string, arpFile string) *ARPProvider {
 	m := make(map[string]struct{})
 	for _, dev := range devices {
 		m[dev] = struct{}{}
 	}
 	return &ARPProvider{
-		devs: m,
+		devs:    m,
+		arpFile: arpFile,
 	}
 }
 
-func (p *ARPProvider) Leases() ([]Lease, error) {
-	f, err := os.Open(arpFile)
+func (p *ARPProvider) Hosts() ([]Host, error) {
+	f, err := os.Open(p.arpFile)
 	if err != nil {
 		return nil, err
 	}
-	var ls []Lease
+	var ls []Host
 	br := bufio.NewReader(f)
 	// skip first line
 	br.ReadString('\n')
@@ -47,7 +47,7 @@ func (p *ARPProvider) Leases() ([]Lease, error) {
 		if _, ok := p.devs[parts[5]]; !ok {
 			continue
 		}
-		ls = append(ls, Lease{
+		ls = append(ls, Host{
 			MAC: parts[3],
 			IP:  parts[0],
 		})

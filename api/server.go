@@ -40,7 +40,7 @@ type ByHostname []routesResp
 
 func (a ByHostname) Len() int           { return len(a) }
 func (a ByHostname) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a ByHostname) Less(i, j int) bool { return a[i].Hostname < a[j].Hostname }
+func (a ByHostname) Less(i, j int) bool { return a[i].Hostname > a[j].Hostname }
 
 func parseIP(addr string) string {
 	parts := strings.SplitN(addr, ":", 2)

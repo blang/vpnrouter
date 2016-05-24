@@ -18,6 +18,9 @@ var (
 	//flagListen    = flag.String("listen", ":8080", "Listen addr")
 	flagWebDir    = flag.String("web", "./web", "Path to static files")
 	flagLeaseFile = flag.String("lease-file", "/var/lib/misc/dnsmasq.leases", "Lease file")
+	flagARPFile   = flag.String("arp-file", "/proc/net/arp", "ARP file")
+	flagNameFile  = flag.String("name-file", "./names.txt", "Static MAC to name mapping")
+	flagDevices   = flag.String("devices", "eth0,eth1", "Ethernet devices to get hosts from")
 	flagAdminIPs  = flag.String("admin-ips", "127.0.0.1", "Admin IPs comma separated")
 	flagTables    = flag.String("tables", "null=Gesperrt,defgw=KabelD", "Routing tables comma separated")
 	flagDebug     = flag.Bool("debug", false, "Enable mock rules")
@@ -26,7 +29,10 @@ var (
 var (
 	tables    []api.TableDef
 	adminIPs  []string
+	devices   []string
 	leaseFile string
+	nameFile  string
+	arpFile   string
 	listen    string
 	webDir    string
 )
@@ -58,6 +64,12 @@ func prepareFlags() {
 		adminIPs = append(adminIPs, ip)
 	}
 
+	devs := strings.Split(*flagDevices, ",")
+	for _, dev := range devs {
+		dev = strings.TrimSpace(dev)
+		devices = append(devices, dev)
+	}
+
 	fi, err := os.Stat(*flagWebDir)
 	if err != nil {
 		log.Fatalf("Invalid webdir: %s", err)
@@ -74,6 +86,22 @@ func prepareFlags() {
 	}
 	f.Close()
 	leaseFile = *flagLeaseFile
+
+	// check arp file
+	f, err = os.Open(*flagARPFile)
+	if err != nil {
+		log.Fatalf("Error opening arp file: %s", err)
+	}
+	f.Close()
+	arpFile = *flagARPFile
+
+	// check name file
+	f, err = os.Open(*flagNameFile)
+	if err != nil {
+		log.Fatalf("Error opening name file: %s", err)
+	}
+	f.Close()
+	nameFile = *flagNameFile
 }
 
 func main() {
@@ -83,7 +111,12 @@ func main() {
 	if *flagDebug {
 		ruleProv = make(router.DummyRuleProvider)
 	}
-	r := router.NewVPNRouter(router.NewDNSMasqLeaseProvider(leaseFile), ruleProv)
+	dnsmasq := router.NewDNSMasqLeaseProvider(leaseFile)
+	log.Printf("Devices: %s", devices)
+	arp := router.NewARPProvider(devices, arpFile)
+	staticNameProv := router.NewStaticNameProvider(nameFile)
+	hostprov := router.HostMerger{arp, dnsmasq, staticNameProv}
+	r := router.NewVPNRouter(hostprov, ruleProv)
 	server := api.NewServer(r, api.NewIPAuth(adminIPs...), tables)
 	apiMux := web.New()
 	apiMux.Use(middleware.SubRouter)

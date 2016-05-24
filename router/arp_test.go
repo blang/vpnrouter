@@ -25,15 +25,13 @@ func TestARPProvider(t *testing.T) {
 		t.Fatalf("Error: %s", err)
 	}
 
-	arpFile = f.Name()
-	p := NewARPProvider([]string{"br0", "br2"})
-	l, err := p.Leases()
+	p := NewARPProvider([]string{"br0", "br2"}, f.Name())
+	l, err := p.Hosts()
 	if err != nil {
 		t.Fatalf("Error: %s", err)
 	}
-	ls := []Lease{
+	ls := []Host{
 		{MAC: "00:01:02:03:04:05", IP: "10.10.10.1"},
-		// {MAC: "00:01:02:03:04:06", IP: "10.10.11.1"},
 		{MAC: "00:01:02:03:04:07", IP: "10.10.12.1"},
 	}
 	if !reflect.DeepEqual(ls, l) {
