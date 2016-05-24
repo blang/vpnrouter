@@ -3,7 +3,7 @@ package router
 type Route struct {
 	IP    string
 	Table string
-	Lease Lease
+	Lease Host
 }
 
 type Router interface {
@@ -12,11 +12,11 @@ type Router interface {
 }
 
 type VPNRouter struct {
-	lp LeaseProvider
+	lp HostProvider
 	rp RuleProvider
 }
 
-func NewVPNRouter(lp LeaseProvider, rp RuleProvider) *VPNRouter {
+func NewVPNRouter(lp HostProvider, rp RuleProvider) *VPNRouter {
 	return &VPNRouter{
 		lp: lp,
 		rp: rp,
@@ -24,7 +24,7 @@ func NewVPNRouter(lp LeaseProvider, rp RuleProvider) *VPNRouter {
 }
 
 func (r *VPNRouter) Routes() ([]Route, error) {
-	ls, err := r.lp.Leases()
+	ls, err := r.lp.Hosts()
 	if err != nil {
 		return nil, err
 	}

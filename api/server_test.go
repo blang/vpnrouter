@@ -29,7 +29,7 @@ func TestRoutes(t *testing.T) {
 	mock := mockRouter{
 		routesFn: func() ([]router.Route, error) {
 			return []router.Route{
-				{IP: "127.0.0.1", Table: "table1", Lease: router.Lease{MAC: "abc", IP: "127.0.0.1", Name: "name"}},
+				{IP: "127.0.0.1", Table: "table1", Lease: router.Host{MAC: "abc", IP: "127.0.0.1", Name: "name"}},
 			}, nil
 		},
 	}
@@ -56,7 +56,7 @@ func TestSetRoute(t *testing.T) {
 	assert := assert.New(t)
 
 	mock_routes := []router.Route{
-		{IP: "127.0.0.1", Table: "table1", Lease: router.Lease{MAC: "abc", IP: "127.0.0.1", Name: "name"}},
+		{IP: "127.0.0.1", Table: "table1", Lease: router.Host{MAC: "abc", IP: "127.0.0.1", Name: "name"}},
 	}
 	mock := mockRouter{
 		routesFn: func() ([]router.Route, error) {
@@ -92,7 +92,7 @@ func TestSetRouteAuthorizedSameIP(t *testing.T) {
 	assert := assert.New(t)
 
 	mock_routes := []router.Route{
-		{IP: "127.0.0.1", Table: "table1", Lease: router.Lease{MAC: "abc", IP: "127.0.0.1", Name: "name"}},
+		{IP: "127.0.0.1", Table: "table1", Lease: router.Host{MAC: "abc", IP: "127.0.0.1", Name: "name"}},
 	}
 	mock := mockRouter{
 		routesFn: func() ([]router.Route, error) {
@@ -130,7 +130,7 @@ func TestSetRouteAuthorized(t *testing.T) {
 	assert := assert.New(t)
 
 	mock_routes := []router.Route{
-		{IP: "127.0.0.1", Table: "table1", Lease: router.Lease{MAC: "abc", IP: "127.0.0.1", Name: "name"}},
+		{IP: "127.0.0.1", Table: "table1", Lease: router.Host{MAC: "abc", IP: "127.0.0.1", Name: "name"}},
 	}
 	mock := mockRouter{
 		routesFn: func() ([]router.Route, error) {

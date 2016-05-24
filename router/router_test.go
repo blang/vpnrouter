@@ -8,10 +8,10 @@ import (
 
 type mock struct {
 	rules  []Rule
-	leases []Lease
+	leases []Host
 }
 
-func (m mock) Leases() ([]Lease, error) {
+func (m mock) Hosts() ([]Host, error) {
 	return m.leases, nil
 }
 
@@ -34,7 +34,7 @@ func TestRoutes(t *testing.T) {
 			{IP: "127.0.0.1", Table: "table1"},
 			{IP: "127.0.0.2", Table: "table2"},
 		},
-		leases: []Lease{
+		leases: []Host{
 			{MAC: "abc", IP: "127.0.0.1", Name: "pc1"},
 			{MAC: "def", IP: "127.0.0.2", Name: "pc2"},
 		},
@@ -63,7 +63,7 @@ func TestSetRoute(t *testing.T) {
 		rules: []Rule{
 			{IP: "127.0.0.1", Table: "table1"},
 		},
-		leases: []Lease{
+		leases: []Host{
 			{MAC: "abc", IP: "127.0.0.1", Name: "pc1"},
 		},
 	}

@@ -6,14 +6,14 @@ import (
 	"strings"
 )
 
-type Lease struct {
+type Host struct {
 	MAC  string
 	IP   string
 	Name string
 }
 
-type LeaseProvider interface {
-	Leases() ([]Lease, error)
+type HostProvider interface {
+	Hosts() ([]Host, error)
 }
 
 type DNSMasqLeaseProvider struct {
@@ -26,24 +26,35 @@ func NewDNSMasqLeaseProvider(leaseFile string) *DNSMasqLeaseProvider {
 	}
 }
 
-func (p *DNSMasqLeaseProvider) Leases() ([]Lease, error) {
+func (p *DNSMasqLeaseProvider) Hosts() ([]Host, error) {
 	f, err := os.Open(p.leaseFile)
 	if err != nil {
 		return nil, err
 	}
 	defer f.Close()
-	var leases []Lease
+	var leases []Host
+
+	hostMap := make(map[string][]Host)
+
 	sc := bufio.NewScanner(f)
 	for sc.Scan() {
 		parts := strings.Split(sc.Text(), " ")
 		if len(parts) != 5 {
 			continue
 		}
-		leases = append(leases, Lease{
+		hostMap[parts[1]] = append(hostMap[parts[1]], Host{
 			MAC:  parts[1],
 			IP:   parts[2],
 			Name: parts[3],
 		})
+	}
+
+	// Save last x-last leases
+	x := 2
+	for _, host := range hostMap {
+		for i := len(host) - 1; i >= len(host)-x && i >= 0; i-- {
+			leases = append(leases, host[i])
+		}
 	}
 	return leases, nil
 
