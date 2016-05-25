@@ -3,6 +3,7 @@ package router
 import (
 	"bufio"
 	"os"
+	"sort"
 	"strings"
 )
 
@@ -11,6 +12,12 @@ type Host struct {
 	IP   string
 	Name string
 }
+
+type ByHostname []Host
+
+func (a ByHostname) Len() int           { return len(a) }
+func (a ByHostname) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByHostname) Less(i, j int) bool { return a[i].Name < a[j].Name }
 
 type HostProvider interface {
 	Hosts() ([]Host, error)
@@ -56,6 +63,7 @@ func (p *DNSMasqLeaseProvider) Hosts() ([]Host, error) {
 			leases = append(leases, host[i])
 		}
 	}
+	sort.Sort(ByHostname(leases))
 	return leases, nil
 
 }

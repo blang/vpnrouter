@@ -20,6 +20,7 @@ var (
 	flagLeaseFile = flag.String("lease-file", "/var/lib/misc/dnsmasq.leases", "Lease file")
 	flagARPFile   = flag.String("arp-file", "/proc/net/arp", "ARP file")
 	flagNameFile  = flag.String("name-file", "./names.txt", "Static MAC to name mapping")
+	flagDBFile    = flag.String("db-file", "./db.txt", "Database file")
 	flagDevices   = flag.String("devices", "eth0,eth1", "Ethernet devices to get hosts from")
 	flagAdminIPs  = flag.String("admin-ips", "127.0.0.1", "Admin IPs comma separated")
 	flagTables    = flag.String("tables", "null=Gesperrt,defgw=KabelD", "Routing tables comma separated")
@@ -33,6 +34,7 @@ var (
 	leaseFile string
 	nameFile  string
 	arpFile   string
+	dbFile    string
 	listen    string
 	webDir    string
 )
@@ -102,6 +104,9 @@ func prepareFlags() {
 	}
 	f.Close()
 	nameFile = *flagNameFile
+
+	// no need to check dbFile for existence
+	dbFile = *flagDBFile
 }
 
 func main() {
@@ -111,6 +116,12 @@ func main() {
 	if *flagDebug {
 		ruleProv = make(router.DummyRuleProvider)
 	}
+
+	// Add persistence layer
+	persistence := router.NewRulePersistence(ruleProv, dbFile)
+	persistence.Init()
+	ruleProv = persistence
+
 	dnsmasq := router.NewDNSMasqLeaseProvider(leaseFile)
 	log.Printf("Devices: %s", devices)
 	arp := router.NewARPProvider(devices, arpFile)
