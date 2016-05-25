@@ -44,6 +44,10 @@ func (p *ARPProvider) Hosts() ([]Host, error) {
 		if len(parts) != 6 {
 			continue
 		}
+		if parts[2] != "0x2" {
+			continue
+		}
+		// Only selected devices
 		if _, ok := p.devs[parts[5]]; !ok {
 			continue
 		}

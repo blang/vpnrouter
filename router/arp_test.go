@@ -11,6 +11,7 @@ var arpFixture = `IP address       HW type     Flags       HW address           
 10.10.10.1      0x1         0x2         00:01:02:03:04:05     *        br0
 10.10.11.1      0x1         0x2         00:01:02:03:04:06	  *        br1
 10.10.12.1      0x1         0x0         00:01:02:03:04:07	  *        br2
+10.10.13.1      0x1         0x2         00:01:02:03:04:08	  *        br2
 `
 
 func TestARPProvider(t *testing.T) {
@@ -32,7 +33,7 @@ func TestARPProvider(t *testing.T) {
 	}
 	ls := []Host{
 		{MAC: "00:01:02:03:04:05", IP: "10.10.10.1"},
-		{MAC: "00:01:02:03:04:07", IP: "10.10.12.1"},
+		{MAC: "00:01:02:03:04:08", IP: "10.10.13.1"},
 	}
 	if !reflect.DeepEqual(ls, l) {
 		t.Errorf("Expected:\n%s\nGot:\n%s", ls, l)
